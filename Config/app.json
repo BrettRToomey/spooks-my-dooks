@@ -1,3 +1,3 @@
 {
-	"foo": "foo-bar"
+	"slack": "$SLACK_TOKEN"
 }

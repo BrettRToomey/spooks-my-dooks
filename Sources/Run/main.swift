@@ -12,7 +12,12 @@ try config.setup()
 let me = "@U5WHRCGA3"
 let meTagged = "<\(me)>"
 let chance = 100 // 1 in 100
-let credentials = SlackCredentials(token: "xoxb-200603424343-TilHOQummmK8YlVbnmnkHvr0")
+
+guard let token = config["app", "slack"]?.string else {
+    throw FuckMe.invalidAuthentication
+}
+
+let credentials = SlackCredentials(token: token)
 let rtmResponse = try startSession(credentials)
 
 guard let url = rtmResponse.data["url"]?.string else {
