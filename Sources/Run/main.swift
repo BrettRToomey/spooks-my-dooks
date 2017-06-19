@@ -33,7 +33,7 @@ let spookingSpookers = [
     "https://pics.onsizzle.com/when-u-see-the-spooky-memes-~lara-1425581.png"
 ]
 
-let chance = 10 // 1 in 100
+let chance = 100 // 1 in 100
 
 guard let token = config["app", "slack"]?.string else {
     throw FuckMe.missingToken
