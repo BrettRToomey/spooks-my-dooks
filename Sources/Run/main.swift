@@ -62,18 +62,35 @@ try EngineClient.factory.socket.connect(to: url) { ws in
             return
         }
         
-        //message = message.trimmingCharacters(in: .whitespaces)
-        
         let roll = Int.random(min: 1, max: chance)
-        guard message.hasPrefix(meTagged) || roll == chance else { return }
         
-        let messageId = try sendMessage(ws, message: "Boooo~~~", channel: chan)
-        lock.lock()
-        defer {
-            lock.unlock()
+        switch message {
+        case _ where roll == chance:
+            let messageId = try sendMessage(ws, message: "Boooo~~~", channel: chan)
+            lock.lock()
+            defer {
+                lock.unlock()
+            }
+            
+            outgoingMessages[messageId] = chan
+            
+        case _ where message.hasPrefix(meTagged):
+            guard !message.contains("asl") else {
+                _ = try sendMessage(ws, message: fromId, channel: chan)
+                return
+            }
+            
+            let messageId = try sendMessage(ws, message: "Boooo~~~", channel: chan)
+            lock.lock()
+            defer {
+                lock.unlock()
+            }
+            
+            outgoingMessages[messageId] = chan
+            
+        default:
+            return
         }
-        
-        outgoingMessages[messageId] = chan
     }
     
     ws.onClose = { ws, _, _, _ in
