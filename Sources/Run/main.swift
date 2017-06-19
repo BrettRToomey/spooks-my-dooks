@@ -4,7 +4,7 @@ import Foundation
 
 enum FuckMe: Error {
     case missingToken
-    case invalidAuthentication
+    case invalidAuthentication(String)
 }
 
 let config = try Config()
@@ -22,7 +22,7 @@ let credentials = SlackCredentials(token: token)
 let rtmResponse = try startSession(credentials)
 
 guard let url = rtmResponse.data["url"]?.string else {
-    throw FuckMe.invalidAuthentication
+    throw FuckMe.invalidAuthentication(rtmResponse.description)
 }
 
 let lock = NSLock()
