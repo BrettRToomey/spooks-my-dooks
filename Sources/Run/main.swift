@@ -3,6 +3,7 @@ import Vapor
 import Foundation
 
 enum FuckMe: Error {
+    case missingToken
     case invalidAuthentication
 }
 
@@ -14,7 +15,7 @@ let meTagged = "<\(me)>"
 let chance = 100 // 1 in 100
 
 guard let token = config["app", "slack"]?.string else {
-    throw FuckMe.invalidAuthentication
+    throw FuckMe.missingToken
 }
 
 let credentials = SlackCredentials(token: token)
