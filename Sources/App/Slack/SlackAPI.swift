@@ -1,6 +1,7 @@
 import HTTP
 import Vapor
 import Dispatch
+import Foundation
 
 let queue = DispatchQueue(label: "spooky.worker")
 
@@ -46,7 +47,7 @@ public func sendMessage(_ ws: WebSocket, message: String, channel: String, id: U
     return id
 }
 
-public func deleteMessage(_ ws: WebSocket, credentials: SlackCredentials, channel: String, timestamp: String) throws {
+public func deleteMessage(_ ws: WebSocket, credentials: SlackCredentials, channel: String, timestamp: String, timeout: TimeInterval) throws {
     let headers: [HeaderKey: String] = ["Accept": "application/json; charset=utf-8"]
     let query: [String: NodeRepresentable] = [
         "token": credentials.token,
@@ -55,7 +56,7 @@ public func deleteMessage(_ ws: WebSocket, credentials: SlackCredentials, channe
         "as_user": true
     ]
     
-    queue.asyncAfter(deadline: .now() + 0.5) {
+    queue.asyncAfter(deadline: .now() + timeout) {
         do {
             _ = try EngineClient.factory.post(
                 "https://slack.com/api/chat.delete",
