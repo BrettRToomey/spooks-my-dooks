@@ -61,7 +61,7 @@ try EngineClient.factory.socket.connect(to: url) { ws in
             return
         }
         
-        message = message.trimmingCharacters(in: .whitespaces)
+        //message = message.trimmingCharacters(in: .whitespaces)
         
         let roll = Int.random(min: 1, max: chance)
         guard message.hasPrefix(meTagged) || roll == chance else { return }
