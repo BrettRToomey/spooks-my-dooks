@@ -17,6 +17,17 @@ public struct SlackCredentials {
     }
 }
 
+public enum Reaction: String {
+    case ghost
+    case x
+    case disappointed
+    case see_no_evil
+    case sunglasses
+    case cat2
+    case yay
+    case rage
+}
+
 public func startSession(_ credentials: SlackCredentials) throws -> Response {
     let headers: [HeaderKey: String] = ["Accept": "application/json; charset=utf-8"]
     let query: [String: NodeRepresentable] = [
@@ -43,7 +54,6 @@ public func sendMessage(_ ws: WebSocket, message: String, channel: String, id: U
     try response.set("text", message)
     
     try ws.send(response.makeBytes().makeString())
-    
     return id
 }
 
@@ -67,4 +77,34 @@ public func deleteMessage(_ ws: WebSocket, credentials: SlackCredentials, channe
             print("Failed to delete message: \(error)")
         }
     }
+}
+
+public func addReaction(ws: WebSocket, credentials: SlackCredentials, channel: String, timestamp: String, reaction: Reaction) throws {
+    let headers: [HeaderKey: String] = ["Accept": "application/json; charset=utf-8"]
+    let query: [String: NodeRepresentable] = [
+        "token": credentials.token,
+        "timestamp": timestamp,
+        "channel": channel,
+        "name": reaction.rawValue
+    ]
+    
+    _ = try EngineClient.factory.post(
+        "https://slack.com/api/reactions.add",
+        query: query,
+        headers
+    )
+}
+
+public func join(ws: WebSocket, credentials: SlackCredentials, channel: String) throws {
+    let headers: [HeaderKey: String] = ["Accept": "application/json; charset=utf-8"]
+    let query: [String: NodeRepresentable] = [
+        "token": credentials.token,
+        "channel": channel
+    ]
+    
+    _ = try EngineClient.factory.post(
+        "https://slack.com/api/channels.join",
+        query: query,
+        headers
+    )
 }
